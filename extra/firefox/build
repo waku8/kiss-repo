@@ -21,10 +21,9 @@ sed 's/\("files":{\)[^}]*/\1/' \
 mv -f _ third_party/rust/encoding_rs/.cargo-checksum.json
 
 
-# Workaround pra libc++ 22 + fmt (llvm issue #79027)
+# Workaround libc++ 22 + fmt (llvm issue #79027)
 : > config/gcc_hidden.h
 
-# Fix pid_t não definido no musl em libwebrtc
 sed -i '1i #include <sys/types.h>' \
     third_party/libwebrtc/modules/desktop_capture/desktop_capturer.h
 
@@ -75,6 +74,14 @@ ac_add_options --disable-debug-symbols
 ac_add_options --disable-parental-controls
 ac_add_options --disable-system-extension-dirs
 EOF
+
+# blessed pulls in Python's curses (_curses) only for the cosmetic build
+# footer and colors. netbsd-curses doesn't provide Python's _curses, so make
+# the top-level import non-fatal; the only real use of blessed is already
+# wrapped in try/except and degrades to no footer.
+sed -i \
+  's/^import blessed$/try:\n    import blessed\nexcept ImportError:\n    blessed = None/' \
+  python/mach/mach/logging.py
 
 ./mach build "${MAKEFLAGS:-}"
 DESTDIR="$1" ./mach install
