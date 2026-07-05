@@ -2,6 +2,8 @@
 
 export DESTDIR="$1"
 
+sed -i "s/'-e', '@0@,@0@-direct'.format(terminfo_base_name), //" meson.build
+
 meson setup \
     -Dprefix=/usr \
     -Dbuildtype=release \
