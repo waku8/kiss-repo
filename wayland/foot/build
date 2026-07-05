@@ -1,18 +1,27 @@
 #!/bin/sh -e
-
 export DESTDIR="$1"
-
-sed -i "s/'-e', '@0@,@0@-direct'.format(terminfo_base_name), //" meson.build
 
 meson setup \
     -Dprefix=/usr \
     -Dbuildtype=release \
     -Dime=false \
     -Dwerror=false \
+    -Dterminfo=disabled \
+    -Dcustom-terminfo-install-location=share/foot/terminfo \
     output
 
 ninja -C output
 ninja -C output install
+
+# netbsd-curses tic is incompatible with foot's meson terminfo target
+# (no -e flag, and -o is a filename not a directory), so terminfo is
+# disabled above and the entry is compiled here instead.
+# netbsd-curses reads a single cdb keyed by terminal name; foot exports
+# $TERMINFO to the path set above, so no conflict with the system db.
+# Write to a plain file (never a directory) to avoid tic's rename() EBUSY.
+sed 's/@default_terminfo@/foot/g' foot.info > output/foot.info.preprocessed
+tic -x -o output/foot.terminfo.cdb output/foot.info.preprocessed
+install -Dm644 output/foot.terminfo.cdb "$1/usr/share/foot/terminfo.cdb"
 
 rm -rf \
     "$1/usr/share/doc" \
