@@ -25,7 +25,7 @@ nspr
 nss
 pango
 pixman
-pkgconf       make
+u-config       make
 python        make
 python-mako   make
 rust          make

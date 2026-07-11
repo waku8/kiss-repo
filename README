@@ -21,3 +21,5 @@ Software:
 - llvm/clang instead of gcc/binutils
 - zlib-ng instead of zlib
 - opendoas instead of sudo/ssu
+- muon instead of meson
+- u-config instead of pkgconf/pkg-config

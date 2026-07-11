@@ -7,8 +7,8 @@ libelf
 libva
 linux-headers make
 m4 make
-meson make
-pkgconf make
+muon make
+u-config make
 python-mako make
 python-yaml make
 python-setuptools make

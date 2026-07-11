@@ -11,7 +11,7 @@ mv -f _ meson.build
 
 export DESTDIR="$1"
 
-meson setup \
+muon setup \
     -Dprefix=/usr \
     output
 

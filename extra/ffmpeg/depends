@@ -11,7 +11,7 @@ linux-headers make
 nasm          make
 openssl
 opus
-pkgconf make
+u-config make
 x264
 x265
 xvidcore

@@ -18,12 +18,12 @@ export DESTDIR="$1"
 : > fuzzing/meson.build
 : > fuzzing/meson.build
 
-CC=clang CXX=clang++ meson setup \
+CC=clang CXX=clang++ muon setup \
     -Dprefix=/usr \
     -Dlibexecdir=/usr/lib \
     -Dlibmount=disabled \
     -Dinstalled_tests=false \
-    -Ddefault_library=both \
+    -Ddefault_library=shared \
     -Dman=false \
     -Dtests=false \
     -Dlibelf=disabled \

@@ -1,5 +1,5 @@
 libpciaccess
 linux-headers make
-meson         make
-pkgconf       make
+muon         make
+u-config       make
 python-docutils make

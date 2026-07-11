@@ -1,7 +1,7 @@
 curl    make
 llvm
 openssl
-pkgconf make
+u-config make
 python  make
 xz
 zlib

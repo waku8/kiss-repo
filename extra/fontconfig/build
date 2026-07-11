@@ -1,16 +1,55 @@
 #!/bin/sh -e
 
-patch -p1 < no-gperf.patch
+muon setup \
+	-Dprefix=/usr \
+	-Dsysconfdir=/etc \
+	-Ddatadir=/usr/share \
+	-Ddefault_library=both \
+	-Ddoc=disabled \
+	-Dtests=disabled \
+	-Dtools=enabled \
+	build
 
-export DESTDIR="$1"
+samu -C build
 
-meson setup \
-    -Dprefix=/usr \
-    -Dxml-dir=/etc/fonts \
-    -Ddoc=disabled \
-    -Dnls=disabled \
-    -Dtests=disabled \
-    output
+mkdir -p "$1"/usr/bin \
+         "$1"/usr/include/fontconfig \
+         "$1"/usr/lib/pkgconfig \
+         "$1"/usr/share/fontconfig/conf.avail \
+         "$1"/usr/share/man/man1 \
+         "$1"/usr/share/man/man3 \
+         "$1"/etc/fonts/conf.d
 
-ninja -C output
-ninja -C output install
+for f in $(find build -name 'libfontconfig.so*' \( -type f -o -type l \)); do
+	cp -P "$f" "$1"/usr/lib/
+done
+
+pc=$(find build -name 'fontconfig.pc' -print -quit)
+[ -n "$pc" ] || exit 1
+install -m 644 "$pc" "$1"/usr/lib/pkgconfig/
+
+for bin in fc-cache fc-cat fc-conflist fc-list fc-match fc-pattern fc-query fc-scan fc-validate; do
+	[ -f "build/$bin/$bin" ] && install -m 755 "build/$bin/$bin" "$1"/usr/bin/
+done
+
+cp fontconfig/*.h "$1"/usr/include/fontconfig/
+
+genheader=$(find build -name 'fontconfig.h' -print -quit)
+[ -n "$genheader" ] || exit 1
+install -m 644 "$genheader" "$1"/usr/include/fontconfig/
+
+cp conf.d/*.conf "$1"/usr/share/fontconfig/conf.avail/
+[ -f build/conf.d/35-lang-normalize.conf ] && cp build/conf.d/35-lang-normalize.conf "$1"/usr/share/fontconfig/conf.avail/
+
+[ -f build/fontconfig.3 ] && install -m 644 build/fontconfig.3 "$1"/usr/share/man/man3/
+find fc-* -maxdepth 1 -name '*.1' -type f -exec install -m 644 {} "$1"/usr/share/man/man1/ \;
+
+cp build/fonts.conf "$1"/etc/fonts/
+cp fonts.dtd "$1"/etc/fonts/
+
+for conf in 10-hinting-slight 10-scale-bitmap-fonts 10-sub-pixel-none 10-yes-antialias \
+            11-lcdfilter-default 20-unhint-small-vera 30-metric-aliases 35-lang-normalize \
+            40-nonlatin 45-generic 45-latin 48-spacing 49-sansserif 50-user 51-local \
+            60-generic 60-latin 65-fonts-persian 65-nonlatin 69-unifont 80-delicious 90-synthetic; do
+	ln -sf /usr/share/fontconfig/conf.avail/${conf}.conf "$1"/etc/fonts/conf.d/
+done

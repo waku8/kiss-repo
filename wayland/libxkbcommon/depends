@@ -1,6 +1,6 @@
 byacc   make
-meson   make
-pkgconf make
+muon   make
+u-config make
 wayland
 wayland-protocols make
 xkeyboard-config

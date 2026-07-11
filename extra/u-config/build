@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+cc -static -nostartfiles -Os -o pkg-config main_linux_amd64.c
+
+install -Dm755 pkg-config "$1/usr/bin/pkg-config"

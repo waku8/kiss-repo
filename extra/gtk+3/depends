@@ -6,9 +6,9 @@ glib
 libepoxy
 libxkbcommon
 mesa
-meson   make
+muon   make
 pango
-pkgconf make
+u-config make
 python  make
 wayland
 wayland-protocols make

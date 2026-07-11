@@ -9,6 +9,6 @@ libxkbcommon
 mesa
 pango
 pixman make
-pkgconf make
+u-config make
 rust make
 wayland

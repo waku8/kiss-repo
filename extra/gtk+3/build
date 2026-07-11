@@ -13,7 +13,13 @@ sed -e '/compile_schemas/s/true/false/' \
     meson.build > _
 mv -f _ meson.build
 
-meson setup \
+# muon requires a literal bool for boolean options, not a quoted string.
+sed -e "s/value: 'false'/value: false/g" \
+    -e "s/value: 'true'/value: true/g" \
+    meson_options.txt > _
+mv -f _ meson_options.txt
+
+muon setup \
     -Dprefix=/usr \
     -Dx11_backend=false \
     -Dwayland_backend=true \
@@ -26,8 +32,7 @@ meson setup \
     output
 
 ninja -C output
-meson install -C output
-
+muon -C output install
 # We don't compile with librsvg which leads to this utility solely causing
 # compiler errors for some packages. It has no use at all.
 rm -f "$1/usr/bin/gtk-encode-symbolic-svg"

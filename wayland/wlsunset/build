@@ -2,7 +2,11 @@
 
 export DESTDIR="$1"
 
-meson setup \
+# Muon 
+sed -i 's/, sources: protocols_headers//' meson.build
+sed -i "s/'main.c'/'main.c', protocols_headers/" meson.build
+
+muon setup \
     -Dprefix=/usr \
     -Dbuildtype=release \
     output
