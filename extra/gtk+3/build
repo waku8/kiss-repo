@@ -24,6 +24,7 @@ muon setup \
     -Dx11_backend=false \
     -Dwayland_backend=true \
     -Dprint_backends=file,lpr \
+    -Ddefault_library=shared \
     -Dcolord=no \
     -Dintrospection=false \
     -Ddemos=false \
