@@ -1,0 +1,14 @@
+#!/bin/sh -e
+export DESTDIR="$1"
+install -dm755 "$DESTDIR/usr/lib/go"
+cp -a . "$DESTDIR/usr/lib/go/"
+
+find "$DESTDIR/usr/lib/go" -type d -name testdata -exec rm -rf {} +
+rm -rf "$DESTDIR/usr/lib/go/test"
+rm -rf "$DESTDIR/usr/lib/go/api"
+rm -rf "$DESTDIR/usr/lib/go/doc"
+
+install -dm755 "$DESTDIR/usr/bin"
+for tool in go gofmt; do
+    ln -sf "../lib/go/bin/$tool" "$DESTDIR/usr/bin/$tool"
+done

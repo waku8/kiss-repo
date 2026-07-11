@@ -5,6 +5,7 @@ export DESTDIR="$1"
 muon setup \
     -Dprefix=/usr \
     -Dvalgrind=disabled \
+    -Ddefault_library=shared \
     -Dintel=enabled \
     build
 
