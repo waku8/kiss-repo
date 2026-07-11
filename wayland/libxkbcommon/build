@@ -6,6 +6,24 @@ sed -i "s/bison = find_program('bison', 'win_bison', required: true, version: '>
 sed -i '/^%define parse\.error detailed/d' src/xkbcomp/parser.y
 sed -i -E 's/^([[:space:]]+[A-Z_][A-Z_0-9]*[[:space:]]+[0-9]+)[[:space:]]+"[^"]*"[[:space:]]*$/\1/' src/xkbcomp/parser.y
 
+# Muon crash
+python3 << 'PYEOF'
+import re
+
+with open('meson.build') as f:
+    content = f.read()
+
+pattern = re.compile(
+    r"xkeyboard_config_dep\.get_variable\(\s*pkgconfig:\s*'[^']*',\s*default_value:\s*'',\s*\)",
+    re.DOTALL
+)
+content, n = pattern.subn("''", content)
+print(f"Subs: {n}")
+
+with open('meson.build', 'w') as f:
+    f.write(content)
+PYEOF
+
 export DESTDIR="$1"
 
 muon setup  \

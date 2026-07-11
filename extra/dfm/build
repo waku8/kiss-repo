@@ -1,0 +1,12 @@
+#!/bin/sh -e
+
+./configure \
+  --prefix=/usr \
+  CC=clang \
+  CFLAGS="$CFLAGS -flto -static"
+
+make
+
+mkdir -p "$1/usr/bin"
+cp -f dfm "$1/usr/bin/dfm"
+chmod 755 "$1/usr/bin/dfm"

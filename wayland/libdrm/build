@@ -6,7 +6,6 @@ muon setup \
     -Dprefix=/usr \
     -Dvalgrind=disabled \
     -Dintel=enabled \
-    -Ddefault_library=shared \
     build
 
 ninja -C build

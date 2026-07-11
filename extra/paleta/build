@@ -1,0 +1,8 @@
+#!/bin/sh -e
+export PREFIX=/usr
+
+make PREFIX="$PREFIX"
+make PREFIX="$PREFIX" DESTDIR="$1" install
+
+mkdir -p "$1$PREFIX/share/paleta"
+cp -r palettes/ "$1$PREFIX/share/paleta/"
