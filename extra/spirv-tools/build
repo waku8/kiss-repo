@@ -1,9 +1,8 @@
 #!/bin/sh -e
-
 export DESTDIR="$1"
-
 cmake -B build \
     -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib \
     -DSPIRV-Headers_SOURCE_DIR=/usr
 
 cmake --build   build
