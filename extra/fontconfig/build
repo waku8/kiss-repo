@@ -1,5 +1,4 @@
 #!/bin/sh -e
-
 muon setup \
 	-Dprefix=/usr \
 	-Dsysconfdir=/etc \
@@ -20,12 +19,15 @@ mkdir -p "$1"/usr/bin \
          "$1"/usr/share/man/man3 \
          "$1"/etc/fonts/conf.d
 
-for f in $(find build -name 'libfontconfig.so*' \( -type f -o -type l \)); do
+find build -name 'libfontconfig.so*' \( -type f -o -type l \) -print0 |
+while IFS= read -r -d '' f; do
 	cp -P "$f" "$1"/usr/lib/
 done
 
 pc=$(find build -name 'fontconfig.pc' -print -quit)
+
 [ -n "$pc" ] || exit 1
+
 install -m 644 "$pc" "$1"/usr/lib/pkgconfig/
 
 for bin in fc-cache fc-cat fc-conflist fc-list fc-match fc-pattern fc-query fc-scan fc-validate; do
@@ -40,13 +42,11 @@ install -m 644 "$genheader" "$1"/usr/include/fontconfig/
 
 cp conf.d/*.conf "$1"/usr/share/fontconfig/conf.avail/
 [ -f build/conf.d/35-lang-normalize.conf ] && cp build/conf.d/35-lang-normalize.conf "$1"/usr/share/fontconfig/conf.avail/
-
 [ -f build/fontconfig.3 ] && install -m 644 build/fontconfig.3 "$1"/usr/share/man/man3/
 find fc-* -maxdepth 1 -name '*.1' -type f -exec install -m 644 {} "$1"/usr/share/man/man1/ \;
 
 cp build/fonts.conf "$1"/etc/fonts/
 cp fonts.dtd "$1"/etc/fonts/
-
 for conf in 10-hinting-slight 10-scale-bitmap-fonts 10-sub-pixel-none 10-yes-antialias \
             11-lcdfilter-default 20-unhint-small-vera 30-metric-aliases 35-lang-normalize \
             40-nonlatin 45-generic 45-latin 48-spacing 49-sansserif 50-user 51-local \
