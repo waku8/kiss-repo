@@ -8,7 +8,6 @@ muon setup \
 	-Dtests=disabled \
 	-Dtools=enabled \
 	build
-
 samu -C build
 
 mkdir -p "$1"/usr/bin \
@@ -19,15 +18,9 @@ mkdir -p "$1"/usr/bin \
          "$1"/usr/share/man/man3 \
          "$1"/etc/fonts/conf.d
 
-find build -name 'libfontconfig.so*' \( -type f -o -type l \) -print0 |
-while IFS= read -r -d '' f; do
-	cp -P "$f" "$1"/usr/lib/
-done
-
+find build -name 'libfontconfig.so*' \( -type f -o -type l \) -exec cp -P {} "$1"/usr/lib/ \;
 pc=$(find build -name 'fontconfig.pc' -print -quit)
-
 [ -n "$pc" ] || exit 1
-
 install -m 644 "$pc" "$1"/usr/lib/pkgconfig/
 
 for bin in fc-cache fc-cat fc-conflist fc-list fc-match fc-pattern fc-query fc-scan fc-validate; do
@@ -35,7 +28,6 @@ for bin in fc-cache fc-cat fc-conflist fc-list fc-match fc-pattern fc-query fc-s
 done
 
 cp fontconfig/*.h "$1"/usr/include/fontconfig/
-
 genheader=$(find build -name 'fontconfig.h' -print -quit)
 [ -n "$genheader" ] || exit 1
 install -m 644 "$genheader" "$1"/usr/include/fontconfig/
@@ -43,6 +35,7 @@ install -m 644 "$genheader" "$1"/usr/include/fontconfig/
 cp conf.d/*.conf "$1"/usr/share/fontconfig/conf.avail/
 [ -f build/conf.d/35-lang-normalize.conf ] && cp build/conf.d/35-lang-normalize.conf "$1"/usr/share/fontconfig/conf.avail/
 [ -f build/fontconfig.3 ] && install -m 644 build/fontconfig.3 "$1"/usr/share/man/man3/
+
 find fc-* -maxdepth 1 -name '*.1' -type f -exec install -m 644 {} "$1"/usr/share/man/man1/ \;
 
 cp build/fonts.conf "$1"/etc/fonts/
