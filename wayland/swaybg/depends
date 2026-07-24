@@ -1,0 +1,7 @@
+cairo       
+gdk-pixbuf
+muon make       
+u-config make
+samurai make     
+wayland          
+wayland-protocols make

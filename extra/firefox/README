@@ -16,8 +16,9 @@ ________________________________________________________________________________
   * Privacy Package ...................................................... [003]
 * Setup .................................................................. [004]
   * Enable VAAPI Acceleration ............................................ [005]
-* Usage .................................................................. [006]
-* References ............................................................. [007]
+  * Fix Silent Audio on Non-48kHz Content ................................ [006]
+* Usage .................................................................. [007]
+* References ............................................................. [008]
 
 
 [001] Installation
@@ -95,7 +96,7 @@ You may also need to set the following environment variable.
 |                                                                              |
 | .profile                                                                     |
 |                                                                              |
-|  export MOZ_WAYLAND_DRM_DEVICE=/dev/dri/renderD128                           |
+|  export MOZ_WAYLAND_DRM_DEVICE=/dev/dri/renderD128                          |
 |                                                                              |
 +------------------------------------------------------------------------------+
 
@@ -104,20 +105,47 @@ attempt to watch a video. Pay attention for errors in the output.
 
 +------------------------------------------------------------------------------+
 |                                                                              |
-|  $ firefox --MOZ_LOG=PlatformDecoderModule:4                                 |
+|  $ firefox --MOZ_LOG=PlatformDecoderModule:4                                |
 |                                                                              |
 +------------------------------------------------------------------------------+
 
 
-[006] Usage
+--[006] Fix Silent Audio on Non-48kHz Content -----------------------------------
+
+cubeb's ALSA backend has a long-standing, unmaintained upstream bug [2]: if a
+site serves audio at a sample rate that doesn't match the family of your ALSA
+device's configured rate (e.g. 44100Hz-based audio against a 48000Hz dmix, or
+the reverse), the audio stream silently fails to open. Video keeps playing
+normally, only the audio is missing. Regular YouTube (Opus @ 48000Hz) is
+usually unaffected; other sites (Discord attachments, Twitter/X videos,
+YouTube livestreams, etc.) are the ones most likely to hit this.
+
+Workaround: force Firefox to resample all audio to 48000Hz itself before
+handing it to ALSA, instead of relying on cubeb's own (broken) conversion.
+
++------------------------------------------------------------------------------+
+|                                                                              |
+| about:config                                                                 |
+|                                                                              |
+|  media.resampling.enabled=true                                              |
+|                                                                              |
++------------------------------------------------------------------------------+
+
+Make sure your ALSA dmix slave is configured at rate 48000 (see your
+/etc/asound.conf) so it matches, and no further conversion is needed on the
+ALSA side.
+
+
+[007] Usage
 ________________________________________________________________________________
 
 Refer to the browser's help output and online documentation for further
 information.
 
 
-[007] References
+[008] References
 ________________________________________________________________________________
 
 [0] https://en.wikipedia.org/wiki/Firefox
-
+[1] (existing AMDGPU kernel option reference, keep as-is)
+[2] https://github.com/mozilla/cubeb/issues/526

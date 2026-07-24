@@ -12,6 +12,7 @@ muon setup \
     -Dpng=enabled \
     -Dtiff=disabled \
     -Dgtk_doc=false \
+    -Ddefault_library=shared \
     -Dman=false \
     -Dgio_sniffing=false \
     -Dtests=false \

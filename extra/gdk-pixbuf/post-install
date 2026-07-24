@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+# Regenerate the gdk-pixbuf loaders cache
+gdk-pixbuf-query-loaders --update-cache
