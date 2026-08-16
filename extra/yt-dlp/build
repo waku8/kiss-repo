@@ -1,0 +1,5 @@
+#!/bin/sh -e
+make lazy-extractors
+python3 -m pip install hatchling hatch-vcs
+python3 -m pip install --no-build-isolation --no-deps --no-warn-script-location \
+	--root="$1" --prefix=/usr .

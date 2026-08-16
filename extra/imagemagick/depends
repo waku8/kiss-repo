@@ -1,0 +1,11 @@
+bzip2
+cairo
+fontconfig
+freetype-harfbuzz
+libjpeg-turbo
+libpng
+libwebp
+pango
+u-config make
+xz
+zlib
