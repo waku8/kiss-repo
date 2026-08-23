@@ -27,6 +27,8 @@ mv -f _ third_party/rust/encoding_rs/.cargo-checksum.json
 sed -i '1i #include <sys/types.h>' \
     third_party/libwebrtc/modules/desktop_capture/desktop_capturer.h
 
+
+export CXXFLAGS="${CXXFLAGS:-} -fconstexpr-steps=16777216"
 export CXXSTDLIB=c++
 export RUSTFLAGS="$RUSTFLAGS --remap-path-prefix=$PWD=. -Cdebuginfo=0"
 export LDFLAGS="$LDFLAGS -Wl,-rpath=/usr/lib/firefox,--enable-new-dtags,--no-as-needed"
