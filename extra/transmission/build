@@ -10,7 +10,9 @@ cmake -B build -S . \
     -DENABLE_DAEMON=ON \
     -DENABLE_UTP=ON \
     -DWITH_SYSTEMD=OFF \
-    -DENABLE_GTK=OFF
+    -DRUN_CLANG_TIDY=OFF \
+    -DENABLE_GTK=OFF \
+    -DENABLE_QT=OFF 
 
 cmake --build build
 
